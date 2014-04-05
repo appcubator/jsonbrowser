@@ -14,12 +14,16 @@
         firstView.superView = this;
         return firstView.render();
       };
-      this.navigateToKey = function(e) {
-        var el, key, level, nextLevel, obj, parentObj, parentPath;
+      this.navigateToKeyFromEl = function(e) {
+        var el, key, level, parentPath;
         el = e.currentTarget;
         parentPath = el.dataset.parentPath;
         key = el.dataset.key;
         level = el.dataset.level;
+        return this.navigateToKey(key, parentPath, level);
+      };
+      this.navigateToKey = function(key, parentPath, level) {
+        var nextLevel, obj, parentObj;
         parentObj = manager.getObjWithPath(parentPath);
         obj = parentObj[key];
         level = parseInt(level);

@@ -36,7 +36,7 @@
             if (_this.enableMode === true) {
 
             } else {
-              return manager.navigateToKey(e);
+              return manager.navigateToKeyFromEl(e);
             }
           };
         })(this));

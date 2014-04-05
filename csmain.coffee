@@ -31,12 +31,17 @@ define [
 			firstView.render();
 
 
-		@navigateToKey = (e) ->
+		@navigateToKeyFromEl = (e) ->
 
 			el = e.currentTarget;
 			parentPath = el.dataset.parentPath;
 			key = el.dataset.key;
 			level = el.dataset.level;
+
+			@navigateToKey(key, parentPath, level)
+
+
+		@navigateToKey = (key, parentPath, level) ->
 			parentObj = manager.getObjWithPath(parentPath);
 
 			obj = parentObj[key];
@@ -53,6 +58,7 @@ define [
 					navigateToArray(obj, parentObj, key, parentPath, nextLevel);
 				when "number"
 				 	navigateToNumberEditor(obj, parentObj, key, parentObj, parentPath, nextLevel);
+
 
 
 		# removes the views after the given level

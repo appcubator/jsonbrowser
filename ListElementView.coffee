@@ -28,7 +28,7 @@ define (require, exports, module) ->
 				if @enableMode == true
 					return
 				else
-					manager.navigateToKey(e)
+					manager.navigateToKeyFromEl(e)
 
 			$(@domEl).on 'dblclick', $.proxy @enableEditKeyMode
 
