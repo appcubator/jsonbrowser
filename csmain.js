@@ -6,10 +6,9 @@
       var bindNavigationKey, fillEditor, getLastKey, levels, navigateToArray, navigateToNumberEditor, navigateToObject, navigateToStringEditor;
       levels = {};
       this.setupEditor = function(rootObj) {
-        var firstView, keys;
+        var firstView;
         this.rootJson = rootObj;
-        keys = _.keys(json);
-        firstView = new ObjectLevelView("ROOT", json, null, null, 0);
+        firstView = new ObjectLevelView("ROOT", this.rootJson, null, null, 0);
         levels[0] = firstView;
         firstView.superView = this;
         return firstView.render();
@@ -40,6 +39,9 @@
             return navigateToNumberEditor(obj, parentObj, key, parentObj, parentPath, nextLevel);
         }
       };
+      this.rerenderLevel = function(level) {
+        return levels[level].render(true);
+      };
       this.cleanDeeperLevels = function(levelNo) {
         var curLevel, _results;
         curLevel = levels[levelNo];
@@ -58,7 +60,7 @@
         if (tokens.length === 0 || path === null || path === "null" || path === "ROOT" || path === "undefined") {
           return this.rootJson;
         } else {
-          curObj = json;
+          curObj = this.rootJson;
           for (_i = 0, _len = tokens.length; _i < _len; _i++) {
             token = tokens[_i];
             curObj = curObj[token];

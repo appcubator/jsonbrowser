@@ -17,20 +17,23 @@ define (require, exports, module) ->
 
 			@type = util.getType(obj);
 
-		render: () ->
+		render: (rerender) ->
 
-			@domEl = document.createElement('li');	
+			if rerender != true
+				@domEl = document.createElement('li');	
+				
+				$(@domEl).on 'click', (e) =>
+					if @enableMode == true
+						return
+					else
+						manager.navigateToKeyFromEl(e)
+				
+				$(@domEl).on 'dblclick', $.proxy @enableEditKeyMode			
+
+			@domEl.innerHTML = "<span class='icon #{@type}'></span><span>#{@key}</span><span class='remove'>×</span>";
 			@setupDataAttributes()
 
-			@domEl.innerHTML = '<span class="icon '+@type+'"></span><span>' + @key + '</span>';
-
-			$(@domEl).on 'click', (e) =>
-				if @enableMode == true
-					return
-				else
-					manager.navigateToKeyFromEl(e)
-
-			$(@domEl).on 'dblclick', $.proxy @enableEditKeyMode
+			$(@domEl).find('.remove').on 'click', @removeKey			
 
 			return @domEl;
 
@@ -39,12 +42,18 @@ define (require, exports, module) ->
 			@domEl.dataset.level = @level;
 			@domEl.dataset.parentPath = @currentPath;
 
+
 		enableEditKeyMode: () =>
 			@enableMode = true
 			@domEl.innerHTML = "<form class='name-change-form'><input class='name-input' type='text' value='#{@key}''></input></form>"
 			$(@domEl).find('.name-change-form').on 'submit', @nameChangeFormSubmitted
 			$(@domEl).find('.name-input').select()
 
+
+		removeKey: (e) =>
+			delete @parentObj[@key]
+			manager.rerenderLevel(@level)
+			e.preventDefault()
 
 		nameChangeFormSubmitted: (e) =>
 			e.preventDefault()
@@ -64,8 +73,10 @@ define (require, exports, module) ->
 
 
 		disableEditKeyMode: (e) ->
+			if @enableMode == false
+				return
 			@enableMode = false
-			@domEl.innerHTML = "<span class='icon #{@type}'></span><span>#{@key}</span>";
+			@render(true);
 
 		highlight: () ->
 			$(@domEl).addClass('selected')

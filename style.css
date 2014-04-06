@@ -69,6 +69,23 @@ html, body {
 	vertical-align: top;
 }
 
+.level li .remove {
+	font-size: 12px;
+	float: right;
+	font-weight: bold;
+	margin-right: 12px;
+	display: none;
+	cursor: pointer;
+}
+
+.level li:hover .remove {
+	display: inline-block;
+}
+
+.level li .remove:hover {
+	font-size: 16px;
+}
+
 .level.two {
 	height: 100%;
 	border-right: 1px solid #cad3e2;

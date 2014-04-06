@@ -34,6 +34,6 @@ define (require, exports, module) ->
 			@editor.setValue(@parentObj[@title])
 
 			# bind value changes
-			@editor.getSession().on 'change', (e) ->
+			@editor.getSession().on 'change', (e) =>
 				val = @editor.getValue();
 				@parentObj[@title] = val;

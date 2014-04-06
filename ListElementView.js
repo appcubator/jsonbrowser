@@ -17,6 +17,7 @@
         this.parentObj = parentObj;
         this.level = level;
         this.nameChangeFormSubmitted = __bind(this.nameChangeFormSubmitted, this);
+        this.removeKey = __bind(this.removeKey, this);
         this.enableEditKeyMode = __bind(this.enableEditKeyMode, this);
         obj = {};
         if (this.title === "ROOT") {
@@ -27,20 +28,23 @@
         this.type = util.getType(obj);
       }
 
-      ListElementView.prototype.render = function() {
-        this.domEl = document.createElement('li');
-        this.setupDataAttributes();
-        this.domEl.innerHTML = '<span class="icon ' + this.type + '"></span><span>' + this.key + '</span>';
-        $(this.domEl).on('click', (function(_this) {
-          return function(e) {
-            if (_this.enableMode === true) {
+      ListElementView.prototype.render = function(rerender) {
+        if (rerender !== true) {
+          this.domEl = document.createElement('li');
+          $(this.domEl).on('click', (function(_this) {
+            return function(e) {
+              if (_this.enableMode === true) {
 
-            } else {
-              return manager.navigateToKeyFromEl(e);
-            }
-          };
-        })(this));
-        $(this.domEl).on('dblclick', $.proxy(this.enableEditKeyMode));
+              } else {
+                return manager.navigateToKeyFromEl(e);
+              }
+            };
+          })(this));
+          $(this.domEl).on('dblclick', $.proxy(this.enableEditKeyMode));
+        }
+        this.domEl.innerHTML = "<span class='icon " + this.type + "'></span><span>" + this.key + "</span><span class='remove'>×</span>";
+        this.setupDataAttributes();
+        $(this.domEl).find('.remove').on('click', this.removeKey);
         return this.domEl;
       };
 
@@ -55,6 +59,12 @@
         this.domEl.innerHTML = "<form class='name-change-form'><input class='name-input' type='text' value='" + this.key + "''></input></form>";
         $(this.domEl).find('.name-change-form').on('submit', this.nameChangeFormSubmitted);
         return $(this.domEl).find('.name-input').select();
+      };
+
+      ListElementView.prototype.removeKey = function(e) {
+        delete this.parentObj[this.key];
+        manager.rerenderLevel(this.level);
+        return e.preventDefault();
       };
 
       ListElementView.prototype.nameChangeFormSubmitted = function(e) {
@@ -76,8 +86,11 @@
       };
 
       ListElementView.prototype.disableEditKeyMode = function(e) {
+        if (this.enableMode === false) {
+          return;
+        }
         this.enableMode = false;
-        return this.domEl.innerHTML = "<span class='icon " + this.type + "'></span><span>" + this.key + "</span>";
+        return this.render(true);
       };
 
       ListElementView.prototype.highlight = function() {

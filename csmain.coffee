@@ -25,8 +25,7 @@ define [
 
 			@rootJson = rootObj;
 
-			keys = _.keys(json);
-			firstView = new ObjectLevelView "ROOT", json, null, null, 0;
+			firstView = new ObjectLevelView "ROOT", @rootJson, null, null, 0;
 			levels[0] = firstView;
 
 			firstView.superView = this;
@@ -62,6 +61,8 @@ define [
 				 	navigateToNumberEditor(obj, parentObj, key, parentObj, parentPath, nextLevel);
 
 
+		@rerenderLevel = (level) ->
+			levels[level].render(true)
 
 		# removes the views after the given level
 		@cleanDeeperLevels = (levelNo) ->
@@ -82,7 +83,7 @@ define [
 				#return
 				@rootJson;
 			else
-				curObj = json;
+				curObj = @rootJson;
 				for token in tokens
 					curObj = curObj[token]
 				#return

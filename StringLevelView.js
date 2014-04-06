@@ -30,11 +30,13 @@
         document.body.appendChild(this.domEl);
         this.editor = ace.edit("textEditor");
         this.editor.setValue(this.parentObj[this.title]);
-        return this.editor.getSession().on('change', function(e) {
-          var val;
-          val = this.editor.getValue();
-          return this.parentObj[this.title] = val;
-        });
+        return this.editor.getSession().on('change', (function(_this) {
+          return function(e) {
+            var val;
+            val = _this.editor.getValue();
+            return _this.parentObj[_this.title] = val;
+          };
+        })(this));
       };
 
       return StringLevelView;
