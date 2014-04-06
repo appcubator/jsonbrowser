@@ -4,12 +4,15 @@
 
   define(function(require, exports, module) {
     var LevelView, ListElementView, util;
+    require('jquery-ui');
     util = require('util');
     ListElementView = require('./ListElementView');
     LevelView = (function() {
-      var liViews;
+      var currentKey, liViews;
 
       liViews = {};
+
+      currentKey = null;
 
       function LevelView(title, curObj, parentObj, parentPath, level) {
         this.title = title;
@@ -20,6 +23,7 @@
         this.newNameFormSubmitted = __bind(this.newNameFormSubmitted, this);
         this.clickedAddNew = __bind(this.clickedAddNew, this);
         this.clickedAddMore = __bind(this.clickedAddMore, this);
+        this.sorted = __bind(this.sorted, this);
         this.setKeys();
         if (util.isRootPath(this.parentPath)) {
           this.currentPath = title;
@@ -57,6 +61,9 @@
           liEl = liView.render();
           this.domEl.appendChild(liEl);
         }
+        $(this.domEl).sortable({
+          stop: this.sorted
+        });
         $(this.domEl).append(["<li class='add-new' data-type='object'><span class='icon object'></span>New Object</li>", "<li class='add-new' data-type='array'><span class='icon array'></span>New Array</li>", "<li class='add-new' data-type='string'><span class='icon string'></span>New String</li>", "<li class='add-new' data-type='number'><span class='icon number'></span>New Number</li>"].join('\n'));
         $(this.domEl).find('.add-new').on('click', (function(_this) {
           return function(e) {
@@ -64,6 +71,10 @@
           };
         })(this));
         return this.domEl;
+      };
+
+      LevelView.prototype.sorted = function() {
+        return console.log("sorted");
       };
 
       LevelView.prototype.clickedAddMore = function() {
@@ -124,7 +135,30 @@
         }
         newSelectedLiView = liViews[keyToSelect];
         newSelectedLiView.highlight();
+        currentKey = keyToSelect;
         return this.selectedLiView = newSelectedLiView;
+      };
+
+      LevelView.prototype.navigateUp = function() {
+        var curInd;
+        if (currentKey === null) {
+          currentKey = this.keys[this.keys.length - 1];
+        } else {
+          curInd = this.keys.indexOf(currentKey);
+          currentKey = this.keys[curInd - 1];
+        }
+        return manager.navigateToKey(currentKey, this.parentPath, this.level);
+      };
+
+      LevelView.prototype.navigateDown = function() {
+        var curInd;
+        if (currentKey === null) {
+          currentKey = this.keys[0];
+        } else {
+          curInd = this.keys.indexOf(currentKey);
+          currentKey = this.keys[curInd + 1];
+        }
+        return manager.navigateToKey(currentKey, this.parentPath, this.level);
       };
 
       LevelView.prototype.remove = function() {

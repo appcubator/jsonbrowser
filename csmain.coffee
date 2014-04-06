@@ -18,6 +18,7 @@ define [
 		# this is the dictionary that keeps track of the 
 		# level views. {levelNo : levelView}
 		levels = {};
+		activeLevel = null
 
 		# setup function that takes in the json that
 		# will be browsed
@@ -27,6 +28,7 @@ define [
 
 			firstView = new ObjectLevelView "ROOT", @rootJson, null, null, 0;
 			levels[0] = firstView;
+			activeLevel = levels[0]
 
 			firstView.superView = this;
 			firstView.render();
@@ -77,6 +79,9 @@ define [
 
 		# returns the object give a path
 		@getObjWithPath = (path) ->
+			if path == null
+				return @rootJson
+	
 			tokens = path.split('.');
 			
 			if tokens.length == 0 || path == null || path == "null" || path == "ROOT" || path == "undefined"
@@ -149,6 +154,26 @@ define [
 		bindNavigationKey = (domEl) ->
 			$(domEl).on('click', navigateToKey);
 
+
+		@activateLevel = (level) ->
+			levels[level]
+
+
+		$(document).bind 'keydown', (e) => 
+			shifted = e.shiftKey
+			cntrled = e.metaKey || e.ctrlKey
+
+			switch e.keyCode
+				when 37
+					console.log("hey")
+				when 38
+					activeLevel.navigateUp()
+				when 39
+					console.log("hey")
+				when 40
+					activeLevel.navigateDown()
+
+			return true
 
 		this;
 

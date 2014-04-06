@@ -36,6 +36,7 @@
               if (_this.enableMode === true) {
 
               } else {
+                manager.activateLevel(_this.level);
                 return manager.navigateToKeyFromEl(e);
               }
             };

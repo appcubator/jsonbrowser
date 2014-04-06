@@ -1,11 +1,13 @@
 define (require, exports, module) ->
 
+	require('jquery-ui')
 	util = require 'util'
 	ListElementView = require './ListElementView'
 
 	class LevelView 
 
 		liViews = {}
+		currentKey = null
 
 		constructor: (@title, @curObj, @parentObj, @parentPath, @level) ->
 
@@ -45,6 +47,10 @@ define (require, exports, module) ->
 				liEl = liView.render()
 				@domEl.appendChild(liEl);
 
+			$(@domEl).sortable({
+				stop: @sorted
+			});
+
 			$(@domEl).append(["<li class='add-new' data-type='object'><span class='icon object'></span>New Object</li>",
 				   "<li class='add-new' data-type='array'><span class='icon array'></span>New Array</li>",
 				   "<li class='add-new' data-type='string'><span class='icon string'></span>New String</li>",
@@ -53,6 +59,9 @@ define (require, exports, module) ->
 			$(@domEl).find('.add-new').on 'click', (e) => @clickedAddNew e
 
 			@domEl
+
+		sorted: () =>
+			console.log "sorted"
 
 		clickedAddMore: () =>
 
@@ -105,7 +114,31 @@ define (require, exports, module) ->
 
 			newSelectedLiView = liViews[keyToSelect]
 			newSelectedLiView.highlight()
+			
+			currentKey = keyToSelect
 			@selectedLiView = newSelectedLiView
+
+		navigateUp: () ->
+			
+			if currentKey == null
+				currentKey = @keys[@keys.length - 1]
+			else
+				curInd = @keys.indexOf(currentKey)
+				currentKey = @keys[curInd - 1]
+
+			manager.navigateToKey currentKey, @parentPath, @level
+
+
+		navigateDown: () ->
+			if currentKey == null
+				currentKey = @keys[0]
+			else
+				curInd = @keys.indexOf(currentKey)
+				currentKey = @keys[curInd + 1]
+
+			manager.navigateToKey currentKey, @parentPath, @level
+
+
 
 		remove: () ->
 			$(@domEl).remove()

@@ -73,9 +73,10 @@ html, body {
 	font-size: 12px;
 	float: right;
 	font-weight: bold;
-	margin-right: 12px;
 	display: none;
 	cursor: pointer;
+	width: 30px;
+	text-align: center;
 }
 
 .level li:hover .remove {

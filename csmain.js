@@ -3,13 +3,15 @@
   define(['underscore', 'jquery', 'ace', './LevelView', './StringLevelView', './ObjectLevelView', './ArrayLevelView', 'util', './test-json'], function(_, $, ace, LevelView, StringLevelView, ObjectLevelView, ArrayLevelView, util) {
     var Manager;
     Manager = function() {
-      var bindNavigationKey, fillEditor, getLastKey, levels, navigateToArray, navigateToNumberEditor, navigateToObject, navigateToStringEditor;
+      var activeLevel, bindNavigationKey, fillEditor, getLastKey, levels, navigateToArray, navigateToNumberEditor, navigateToObject, navigateToStringEditor;
       levels = {};
+      activeLevel = null;
       this.setupEditor = function(rootObj) {
         var firstView;
         this.rootJson = rootObj;
         firstView = new ObjectLevelView("ROOT", this.rootJson, null, null, 0);
         levels[0] = firstView;
+        activeLevel = levels[0];
         firstView.superView = this;
         return firstView.render();
       };
@@ -56,6 +58,9 @@
       };
       this.getObjWithPath = function(path) {
         var curObj, token, tokens, _i, _len;
+        if (path === null) {
+          return this.rootJson;
+        }
         tokens = path.split('.');
         if (tokens.length === 0 || path === null || path === "null" || path === "ROOT" || path === "undefined") {
           return this.rootJson;
@@ -121,6 +126,30 @@
       bindNavigationKey = function(domEl) {
         return $(domEl).on('click', navigateToKey);
       };
+      this.activateLevel = function(level) {
+        return levels[level];
+      };
+      $(document).bind('keydown', (function(_this) {
+        return function(e) {
+          var cntrled, shifted;
+          shifted = e.shiftKey;
+          cntrled = e.metaKey || e.ctrlKey;
+          switch (e.keyCode) {
+            case 37:
+              console.log("hey");
+              break;
+            case 38:
+              activeLevel.navigateUp();
+              break;
+            case 39:
+              console.log("hey");
+              break;
+            case 40:
+              activeLevel.navigateDown();
+          }
+          return true;
+        };
+      })(this));
       return this;
     };
     window.manager = new Manager();

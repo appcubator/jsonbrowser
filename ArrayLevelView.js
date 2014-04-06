@@ -28,6 +28,23 @@
         }).call(this);
       };
 
+      ObjectLevelView.prototype.sorted = function() {
+        var arr, ind, newArr, nmrInd, _i, _len;
+        arr = $(this.domEl).sortable('toArray', {
+          attribute: 'data-key'
+        });
+        newArr = [];
+        for (_i = 0, _len = arr.length; _i < _len; _i++) {
+          ind = arr[_i];
+          if (ind !== "") {
+            nmrInd = parseInt(ind);
+            newArr.push(this.curObj[nmrInd]);
+          }
+        }
+        this.parentObj[this.title] = newArr;
+        return this.render(true);
+      };
+
       return ObjectLevelView;
 
     })(LevelView);
