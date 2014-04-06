@@ -47,6 +47,16 @@ html, body {
 	background-color: #bac3d2;
 }
 
+.level li.add-new {
+	opacity: 0.3;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.level li.add-new:hover {
+	opacity: 1;
+}
+
 .level li.selected {
 	background-color: #bac3d2;
 }

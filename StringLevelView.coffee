@@ -6,6 +6,7 @@ define (require, exports, module) ->
 	class StringLevelView extends LevelView
 
 		render: () ->
+
 			manager.highlightPrevKey(@level, @title)
 
 			# create a container div

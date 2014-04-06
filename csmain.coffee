@@ -4,10 +4,12 @@ define [
   'ace'
   './LevelView',
   './StringLevelView',
+  './ObjectLevelView',
+  './ArrayLevelView',
   'util'
   './test-json'
 ],
-(_, $, ace, LevelView, StringLevelView, util) ->
+(_, $, ace, LevelView, StringLevelView, ObjectLevelView, ArrayLevelView, util) ->
 
 	# this is the class that controls the overall functionality
 	Manager = () ->
@@ -24,7 +26,7 @@ define [
 			@rootJson = rootObj;
 
 			keys = _.keys(json);
-			firstView = new LevelView keys, "ROOT", json, null, null, 0;
+			firstView = new ObjectLevelView "ROOT", json, null, null, 0;
 			levels[0] = firstView;
 
 			firstView.superView = this;
@@ -111,9 +113,7 @@ define [
 
 		navigateToStringEditor = (obj, parentObj, title, parentPath, nextLevel) ->
 
-			keys = null
-
-			firstView = new StringLevelView keys, title, obj, parentObj, parentPath, nextLevel;
+			firstView = new StringLevelView title, obj, parentObj, parentPath, nextLevel;
 			# firstView.superView = this;
 			firstView.render();
 
@@ -129,8 +129,7 @@ define [
 
 		navigateToObject = (obj, parentObj, title, parentPath, nextLevel) ->
 
-			keys = _.keys(obj);			
-			firstView = new LevelView keys, title, obj, parentObj, parentPath, nextLevel;
+			firstView = new ObjectLevelView title, obj, parentObj, parentPath, nextLevel;
 			firstView.superView = this;
 			firstView.render();
 
@@ -139,9 +138,7 @@ define [
 
 		navigateToArray = (obj, parentObj, title, parentPath, nextLevel) ->
 			
-			keys = (ind for val, ind in obj)
-			
-			firstView = new LevelView keys, title, obj, parentObj, parentPath, nextLevel;
+			firstView = new ArrayLevelView title, obj, parentObj, parentPath, nextLevel;
 			firstView.superView = this;
 			firstView.render();
 

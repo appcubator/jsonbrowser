@@ -11,8 +11,7 @@
 
       liViews = {};
 
-      function LevelView(keys, title, curObj, parentObj, parentPath, level) {
-        this.keys = keys;
+      function LevelView(title, curObj, parentObj, parentPath, level) {
         this.title = title;
         this.curObj = curObj;
         this.parentObj = parentObj;
@@ -21,6 +20,7 @@
         this.newNameFormSubmitted = __bind(this.newNameFormSubmitted, this);
         this.clickedAddNew = __bind(this.clickedAddNew, this);
         this.clickedAddMore = __bind(this.clickedAddMore, this);
+        this.setKeys();
         if (util.isRootPath(this.parentPath)) {
           this.currentPath = title;
         } else {
@@ -29,37 +29,22 @@
         this.level = level || 0;
       }
 
-      LevelView.prototype.render = function() {
-        var key, levelEl, liEl, liView, _i, _len, _ref;
-        manager.highlightPrevKey(this.level, this.title);
-        levelEl = document.createElement('ul');
-        levelEl.className = "level one";
-        liEl = document.createElement('li');
-        liEl.className = 'title';
-        liEl.innerHTML = this.title;
-        levelEl.appendChild(liEl);
-        _ref = this.keys || [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          key = _ref[_i];
-          liView = new ListElementView(this.currentPath, key, this.curObj, this.level);
-          liViews[key] = liView;
-          liEl = liView.render();
-          levelEl.appendChild(liEl);
-        }
-        liEl = document.createElement('li');
-        liEl.className = 'add-more';
-        liEl.innerHTML = '<div>+ Add Value</div>';
-        levelEl.appendChild(liEl);
-        document.body.appendChild(levelEl);
-        this.domEl = levelEl;
-        $(this.domEl).find('.add-more').one('click', this.clickedAddMore);
-        return this.domEl;
+      LevelView.prototype.setKeys = function() {
+        return this.keys = null;
       };
 
-      LevelView.prototype.rerender = function() {
-        var key, liEl, liView, _i, _len, _ref;
-        this.keys = _.keys(this.curObj);
-        this.domEl.innerHTML = '';
+      LevelView.prototype.render = function(rerender) {
+        var key, levelEl, liEl, liView, _i, _len, _ref;
+        manager.highlightPrevKey(this.level, this.title);
+        if (!rerender) {
+          levelEl = document.createElement('ul');
+          levelEl.className = "level one";
+          this.domEl = levelEl;
+          document.body.appendChild(this.domEl);
+        } else {
+          this.setKeys();
+          this.domEl.innerHTML = '';
+        }
         liEl = document.createElement('li');
         liEl.className = 'title';
         liEl.innerHTML = this.title;
@@ -72,30 +57,30 @@
           liEl = liView.render();
           this.domEl.appendChild(liEl);
         }
-        liEl = document.createElement('li');
-        liEl.className = 'add-more';
-        liEl.innerHTML = '<div>+ Add Value</div>';
-        this.domEl.appendChild(liEl);
-        $(this.domEl).find('.add-more').one('click', this.clickedAddMore);
+        $(this.domEl).append(["<li class='add-new' data-type='object'><span class='icon object'></span>New Object</li>", "<li class='add-new' data-type='array'><span class='icon array'></span>New Array</li>", "<li class='add-new' data-type='string'><span class='icon string'></span>New String</li>", "<li class='add-new' data-type='number'><span class='icon number'></span>New Number</li>"].join('\n'));
+        $(this.domEl).find('.add-new').on('click', (function(_this) {
+          return function(e) {
+            return _this.clickedAddNew(e);
+          };
+        })(this));
         return this.domEl;
       };
 
       LevelView.prototype.clickedAddMore = function() {
-        var str;
-        str = ["<div class='object add-new'><span class='icon object'></span>Object</div>", "<div class='array add-new'><span class='icon array'></span>Array</div>", "<div class='string add-new'><span class='icon string'></span>String</div>", "<div class='number add-new'><span class='icon number'></span>Number</div>"].join('\n');
-        $(this.domEl).find('.add-more').html(str);
-        return $(this.domEl).find('.add-new').one('click', this.clickedAddNew);
+        return $(this.domEl).find('.add-more').html(str);
       };
 
       LevelView.prototype.clickedAddNew = function(e) {
-        var className;
-        className = e.currentTarget.className;
-        className = className.replace(' add-new', '');
-        return this.showKeyInput(className);
+        var type;
+        type = e.currentTarget.dataset.type;
+        return this.showKeyInput(type);
       };
 
       LevelView.prototype.showKeyInput = function(type) {
-        $(this.domEl).find('.add-more').html("<form class='new-name-form'><input class='name-input' type='text'></input></form>");
+        var newName;
+        $(this.domEl).find('.add-new').hide();
+        $(this.domEl).append("<li class='new-item-line'><form class='new-name-form'><input class='name-input' type='text'></input></form></li>");
+        newName = $(this.domEl).find('.name-input').focus();
         return $(this.domEl).find('.new-name-form').on('submit', (function(_this) {
           return function(e) {
             return _this.newNameFormSubmitted(e, type);
@@ -107,7 +92,8 @@
         var newName;
         e.preventDefault();
         newName = $(this.domEl).find('.name-input').val();
-        return this.addNewValue(newName, type);
+        this.addNewValue(newName, type);
+        return $(this.domEl).find('.new-item-line').remove();
       };
 
       LevelView.prototype.addNewValue = function(key, valueType) {
@@ -124,7 +110,7 @@
           case "number":
             this.curObj[key] = 0;
         }
-        return this.rerender();
+        return this.render(true);
       };
 
       LevelView.prototype.highlightKey = function(keyToSelect) {

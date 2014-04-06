@@ -7,8 +7,10 @@ define (require, exports, module) ->
 
 		liViews = {}
 
-		constructor: (@keys, @title, @curObj, @parentObj, @parentPath, @level) ->
-			
+		constructor: (@title, @curObj, @parentObj, @parentPath, @level) ->
+
+			@setKeys()
+
 			if util.isRootPath @parentPath
 				@currentPath = title
 			else
@@ -16,41 +18,22 @@ define (require, exports, module) ->
 
 			@level = level || 0;
 
+		setKeys: () ->
+			@keys = null
 
-		render: () ->
+		render: (rerender) ->
+
 			manager.highlightPrevKey(@level, @title);
 
-			levelEl = document.createElement('ul');
-			levelEl.className = "level one";
+			if !rerender
+				levelEl = document.createElement('ul');
+				levelEl.className = "level one";
+				@domEl = levelEl;
+				document.body.appendChild(@domEl);
+			else
+				@setKeys()
+				@domEl.innerHTML = ''
 
-			liEl = document.createElement('li');
-			liEl.className = 'title';
-			liEl.innerHTML = this.title;
-			levelEl.appendChild(liEl);
-
-			for key in @keys || []
-				liView = new ListElementView @currentPath, key, @curObj, @level
-				liViews[key] = liView
-				liEl = liView.render()
-				levelEl.appendChild(liEl);
-
-			liEl = document.createElement('li');
-			liEl.className = 'add-more';
-			liEl.innerHTML = '<div>+ Add Value</div>';
-			levelEl.appendChild(liEl);
-
-			document.body.appendChild(levelEl);
-
-			@domEl = levelEl;
-			$(@domEl).find('.add-more').one 'click' , @clickedAddMore
-
-			@domEl
-
-		rerender: () ->
-
-			@keys = _.keys(@curObj);			
-
-			@domEl.innerHTML = ''
 			liEl = document.createElement('li');
 			liEl.className = 'title';
 			liEl.innerHTML = this.title;
@@ -62,35 +45,29 @@ define (require, exports, module) ->
 				liEl = liView.render()
 				@domEl.appendChild(liEl);
 
-			liEl = document.createElement('li');
-			liEl.className = 'add-more';
-			liEl.innerHTML = '<div>+ Add Value</div>';
-			@domEl.appendChild(liEl);
+			$(@domEl).append(["<li class='add-new' data-type='object'><span class='icon object'></span>New Object</li>",
+				   "<li class='add-new' data-type='array'><span class='icon array'></span>New Array</li>",
+				   "<li class='add-new' data-type='string'><span class='icon string'></span>New String</li>",
+				   "<li class='add-new' data-type='number'><span class='icon number'></span>New Number</li>"].join('\n'))
 
-			$(@domEl).find('.add-more').one 'click' , @clickedAddMore
+			$(@domEl).find('.add-new').on 'click', (e) => @clickedAddNew e
 
 			@domEl
 
-
 		clickedAddMore: () =>
-			str = ["<div class='object add-new'><span class='icon object'></span>Object</div>",
-				   "<div class='array add-new'><span class='icon array'></span>Array</div>",
-				   "<div class='string add-new'><span class='icon string'></span>String</div>",
-				   "<div class='number add-new'><span class='icon number'></span>Number</div>"].join('\n')
 
 			$(@domEl).find('.add-more').html(str)
-			$(@domEl).find('.add-new').one 'click', @clickedAddNew
 
 
 		clickedAddNew: (e) =>
-
-			className = e.currentTarget.className
-			className = className.replace(' add-new', '');
-			@showKeyInput(className)
+			type = e.currentTarget.dataset.type;
+			@showKeyInput(type)
 
 
 		showKeyInput: (type) ->
-			$(@domEl).find('.add-more').html "<form class='new-name-form'><input class='name-input' type='text'></input></form>"
+			$(@domEl).find('.add-new').hide();
+			$(@domEl).append( "<li class='new-item-line'><form class='new-name-form'><input class='name-input' type='text'></input></form></li>");
+			newName = $(@domEl).find('.name-input').focus()
 			$(@domEl).find('.new-name-form').on 'submit', (e) => @newNameFormSubmitted(e, type)
 
 
@@ -98,6 +75,7 @@ define (require, exports, module) ->
 			e.preventDefault()
 			newName = $(@domEl).find('.name-input').val()
 			@addNewValue(newName, type)
+			$(@domEl).find('.new-item-line').remove();
 
 
 		addNewValue: (key, valueType)->
@@ -115,7 +93,7 @@ define (require, exports, module) ->
 				when "number"
 					@curObj[key] = 0
 
-			@rerender()
+			@render(true)
 
 		highlightKey: (keyToSelect) ->
 
