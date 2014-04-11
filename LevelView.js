@@ -62,7 +62,9 @@
           this.domEl.appendChild(liEl);
         }
         $(this.domEl).sortable({
-          stop: this.sorted
+          "stop": this.sorted,
+          "placeholder": "ui-sortable-placeholder",
+          "cancel": ".add-new, .title"
         });
         $(this.domEl).append(["<li class='add-new' data-type='object'><span class='icon object'></span>New Object</li>", "<li class='add-new' data-type='array'><span class='icon array'></span>New Array</li>", "<li class='add-new' data-type='string'><span class='icon string'></span>New String</li>", "<li class='add-new' data-type='number'><span class='icon number'></span>New Number</li>"].join('\n'));
         $(this.domEl).find('.add-new').on('click', (function(_this) {
@@ -128,6 +130,7 @@
         var key, newSelectedLiView, val;
         for (key in liViews) {
           val = liViews[key];
+          val.unhighlight();
           val.disableEditKeyMode();
         }
         if (this.selectedLiView) {
@@ -137,6 +140,24 @@
         newSelectedLiView.highlight();
         currentKey = keyToSelect;
         return this.selectedLiView = newSelectedLiView;
+      };
+
+      LevelView.prototype.highlightKeys = function(keys) {
+        var key, keyToHighlight, val, _i, _len, _results;
+        for (key in liViews) {
+          val = liViews[key];
+          val.unhighlight();
+          val.disableEditKeyMode();
+        }
+        if (this.selectedLiView) {
+          this.selectedLiView.unhighlight();
+        }
+        _results = [];
+        for (_i = 0, _len = keys.length; _i < _len; _i++) {
+          keyToHighlight = keys[_i];
+          _results.push(liViews[keyToHighlight].highlight());
+        }
+        return _results;
       };
 
       LevelView.prototype.navigateUp = function() {

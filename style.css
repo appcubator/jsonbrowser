@@ -61,6 +61,11 @@ html, body {
 	background-color: #bac3d2;
 }
 
+.ui-sortable-placeholder {
+	background-color: #bac3d2;
+	opacity: 0.5;
+}
+
 .level li.title:hover {
 	background-color: transparent;
 }
@@ -116,9 +121,6 @@ html, body {
 
 
 .level.editor {
-	height: 100%;
-	border-right: 1px solid #cad3e2;
-
 	width: 320px;
 	margin: 0;
 	padding-left: 0;

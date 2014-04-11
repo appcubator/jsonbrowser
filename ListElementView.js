@@ -10,6 +10,8 @@
 
       ListElementView.enableMode = false;
 
+      ListElementView.isShiftPressed = false;
+
       function ListElementView(currentPath, key, parentObj, level) {
         var obj;
         this.currentPath = currentPath;
@@ -37,7 +39,7 @@
 
               } else {
                 manager.activateLevel(_this.level);
-                return manager.navigateToKeyFromEl(e);
+                return manager.selectKeyFromEl(e);
               }
             };
           })(this));

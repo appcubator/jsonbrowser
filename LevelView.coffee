@@ -48,7 +48,9 @@ define (require, exports, module) ->
 				@domEl.appendChild(liEl);
 
 			$(@domEl).sortable({
-				stop: @sorted
+				"stop": @sorted, 
+				"placeholder": "ui-sortable-placeholder", 
+				"cancel": ".add-new, .title"
 			});
 
 			$(@domEl).append(["<li class='add-new' data-type='object'><span class='icon object'></span>New Object</li>",
@@ -107,6 +109,7 @@ define (require, exports, module) ->
 		highlightKey: (keyToSelect) ->
 
 			for key,val of liViews
+				val.unhighlight()
 				val.disableEditKeyMode()
 
 			if @selectedLiView
@@ -117,6 +120,19 @@ define (require, exports, module) ->
 			
 			currentKey = keyToSelect
 			@selectedLiView = newSelectedLiView
+
+		highlightKeys: (keys) ->
+			
+			for key,val of liViews
+				val.unhighlight()
+				val.disableEditKeyMode()
+
+			if @selectedLiView
+				@selectedLiView.unhighlight()
+
+			for keyToHighlight in keys
+				liViews[keyToHighlight].highlight()
+
 
 		navigateUp: () ->
 			

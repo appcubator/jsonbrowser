@@ -6,10 +6,11 @@ define [
   './StringLevelView',
   './ObjectLevelView',
   './ArrayLevelView',
+  './FileSelector',
   'util'
   './test-json'
 ],
-(_, $, ace, LevelView, StringLevelView, ObjectLevelView, ArrayLevelView, util) ->
+(_, $, ace, LevelView, StringLevelView, ObjectLevelView, ArrayLevelView, FileSelector, util) ->
 
 	# this is the class that controls the overall functionality
 	Manager = () ->
@@ -19,6 +20,8 @@ define [
 		# level views. {levelNo : levelView}
 		levels = {};
 		activeLevel = null
+		selector = new FileSelector()
+		isShiftPressed = false
 
 		# setup function that takes in the json that
 		# will be browsed
@@ -34,14 +37,20 @@ define [
 			firstView.render();
 
 
-		@navigateToKeyFromEl = (e) ->
+		# gets called when a list element is
+		# clicked
+		@selectKeyFromEl = (e) ->
 
 			el = e.currentTarget;
 			parentPath = el.dataset.parentPath;
 			key = el.dataset.key;
 			level = el.dataset.level;
 
-			@navigateToKey(key, parentPath, level)
+			if isShiftPressed is true
+				selector.elementShiftClicked(key, levels[level])
+			else
+				selector.elementClicked(key, levels[level])
+				@navigateToKey(key, parentPath, level)
 
 
 		@navigateToKey = (key, parentPath, level) ->
@@ -160,7 +169,8 @@ define [
 
 
 		$(document).bind 'keydown', (e) => 
-			shifted = e.shiftKey
+			isShiftPressed = e.shiftKey
+			console.log(isShiftPressed)
 			cntrled = e.metaKey || e.ctrlKey
 
 			switch e.keyCode
@@ -175,7 +185,16 @@ define [
 
 			return true
 
+
+		$(document).on 'keyup', (e) =>
+			isShiftPressed = e.shiftKey
+			return true
+
+
 		this;
 
+
 	window.manager = new Manager()
+	console.log manager
 	manager.setupEditor(json)
+

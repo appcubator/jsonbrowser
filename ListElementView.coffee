@@ -6,6 +6,7 @@ define (require, exports, module) ->
 
 		@type = ""
 		@enableMode = false;
+		@isShiftPressed = false;
 
 		constructor: (@currentPath, @key, @parentObj, @level) ->
 			obj = {}
@@ -17,17 +18,20 @@ define (require, exports, module) ->
 
 			@type = util.getType(obj);
 
+
 		render: (rerender) ->
 
 			if rerender != true
 				@domEl = document.createElement('li');	
 				
 				$(@domEl).on 'click', (e) =>
+
+
 					if @enableMode == true
 						return
 					else
 						manager.activateLevel(@level)
-						manager.navigateToKeyFromEl(e)
+						manager.selectKeyFromEl(e)
 				
 				$(@domEl).on 'dblclick', $.proxy @enableEditKeyMode			
 
@@ -36,7 +40,9 @@ define (require, exports, module) ->
 
 			$(@domEl).find('.remove').on 'click', @removeKey			
 
+
 			return @domEl;
+
 
 		setupDataAttributes: () ->
 			@domEl.dataset.key = @key;
@@ -55,6 +61,7 @@ define (require, exports, module) ->
 			delete @parentObj[@key]
 			manager.rerenderLevel(@level)
 			e.preventDefault()
+
 
 		nameChangeFormSubmitted: (e) =>
 			e.preventDefault()
@@ -79,11 +86,14 @@ define (require, exports, module) ->
 			@enableMode = false
 			@render(true);
 
+
 		highlight: () ->
 			$(@domEl).addClass('selected')
 
+
 		unhighlight: () ->
 			$(@domEl).removeClass('selected')
+
 
 		remove: () ->
 			$(@domEl).remove()
