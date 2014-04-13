@@ -22,6 +22,7 @@
         this.level = level;
         this.newNameFormSubmitted = __bind(this.newNameFormSubmitted, this);
         this.clickedAddNew = __bind(this.clickedAddNew, this);
+        this.getLiView = __bind(this.getLiView, this);
         this.clickedAddMore = __bind(this.clickedAddMore, this);
         this.sorted = __bind(this.sorted, this);
         this.setKeys();
@@ -81,6 +82,10 @@
 
       LevelView.prototype.clickedAddMore = function() {
         return $(this.domEl).find('.add-more').html(str);
+      };
+
+      LevelView.prototype.getLiView = function(key) {
+        return liViews[key];
       };
 
       LevelView.prototype.clickedAddNew = function(e) {

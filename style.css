@@ -41,6 +41,8 @@ html, body {
 	height: 36px;
 	line-height: 36px;
 	padding-left: 24px;
+	position: relative;
+	width: 200px;
 }
 
 .level li:hover {

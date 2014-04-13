@@ -69,6 +69,8 @@ define (require, exports, module) ->
 
 			$(@domEl).find('.add-more').html(str)
 
+		getLiView: (key) =>
+			liViews[key]
 
 		clickedAddNew: (e) =>
 			type = e.currentTarget.dataset.type;

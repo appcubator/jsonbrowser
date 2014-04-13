@@ -27,21 +27,90 @@
       };
 
       FileSelector.prototype.elementShiftClicked = function(key, level) {
-        var ind;
+        var ind, startInd;
         if (level !== this.currentLevel) {
           this.currentLevel = level;
           ind = this.getIndexOfKey(key);
           return this.selectRange(0, ind);
+        } else {
+          startInd = this.getIndexOfKey(this.files[0]);
+          ind = this.getIndexOfKey(key);
+          return this.selectRange(startInd, ind);
         }
       };
 
       FileSelector.prototype.selectRange = function(start, end) {
-        var i, _i, _ref;
-        this.files = [];
-        for (i = _i = start, _ref = end + 1; start <= _ref ? _i < _ref : _i > _ref; i = start <= _ref ? ++_i : --_i) {
-          this.files.push(this.currentLevel.keys[i]);
+        var i, key, liView, _i, _j, _len, _ref, _ref1, _ref2, _results;
+        if (start > end) {
+          _ref = [end, start], start = _ref[0], end = _ref[1];
         }
-        return this.currentLevel.highlightKeys(this.files);
+        this.files = [];
+        for (i = _i = start, _ref1 = end + 1; _i < _ref1; i = _i += 1) {
+          key = this.currentLevel.keys[i];
+          this.files.push(key);
+        }
+        this.currentLevel.highlightKeys(this.files);
+        _ref2 = this.files;
+        _results = [];
+        for (_j = 0, _len = _ref2.length; _j < _len; _j++) {
+          key = _ref2[_j];
+          liView = this.currentLevel.getLiView(key);
+          _results.push(this.makeDraggable(liView));
+        }
+        return _results;
+      };
+
+      FileSelector.prototype.getClonesExceptCurrent = function(currentLiView) {
+        var $clones, $domEl, key, liView, p1, p2, _i, _len, _ref;
+        $clones = [];
+        _ref = this.files;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          key = _ref[_i];
+          liView = this.currentLevel.getLiView(key);
+          if (liView !== currentLiView) {
+            $domEl = $(liView.domEl).clone();
+            $clones.push($domEl);
+            p1 = $(liView.domEl).offset();
+            p2 = $(currentLiView.domEl).offset();
+            $domEl.css({
+              marginLeft: p1.left - p2.left,
+              marginTop: p1.top - p2.top
+            });
+          }
+        }
+        return $clones;
+      };
+
+      FileSelector.prototype.makeDraggable = function(liView) {
+        var $clones, currentLevel, domEl;
+        domEl = liView.domEl;
+        $clones = this.getClonesExceptCurrent(liView);
+        currentLevel = this.currentLevel;
+        return $(domEl).draggable({
+          helper: "clone",
+          start: function(e, ui) {
+            return _.each($clones, function($clone) {
+              return $(currentLevel.domEl).append($clone);
+            });
+          },
+          stop: function(e, ui) {
+            return _.each($clones, function($clone) {
+              return $clone.remove();
+            });
+          },
+          drag: function(e, ui) {
+            var debug;
+            _.each($clones, function($clone) {
+              return $clone.css({
+                position: "absolute",
+                top: ui.position.top,
+                left: ui.position.left
+              });
+            });
+            debug = function() {};
+            return setTimeout(debug, 3000);
+          }
+        });
       };
 
       return FileSelector;
