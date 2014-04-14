@@ -51,6 +51,9 @@
       this.rerenderLevel = function(level) {
         return levels[level].render(true);
       };
+      this.getLevelViews = function() {
+        return levels;
+      };
       this.cleanDeeperLevels = function(levelNo) {
         var curLevel, _results;
         curLevel = levels[levelNo];

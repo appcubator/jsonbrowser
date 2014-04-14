@@ -31,6 +31,8 @@ define (require, exports, module) ->
 				ind = @getIndexOfKey(key)
 				@selectRange(startInd, ind)
 
+			# clear deeper levels here
+
 
 		selectRange: (start, end)->
 			if start > end
@@ -48,6 +50,9 @@ define (require, exports, module) ->
 				liView = @currentLevel.getLiView(key)
 				@makeDraggable(liView)
 
+			for key in _.difference(@currentLevel.keys, @files)
+				@makeDroppable(@currentLevel.getLiView(key))
+
 
 		getClonesExceptCurrent: (currentLiView)->
 
@@ -56,6 +61,7 @@ define (require, exports, module) ->
 				liView = @currentLevel.getLiView(key)
 				if liView != currentLiView
 					$domEl = $(liView.domEl).clone()
+					$domEl.addClass('ui-draggable-dragging');
 					$clones.push($domEl)
 					# adding the margins depending on the distance
 					# of the clone from the element that is being draggeed
@@ -99,10 +105,34 @@ define (require, exports, module) ->
 							top: ui.position.top,
 							left: ui.position.left
 						});
+					
+					# debug = () -> 
+					# 	debugger;
 
-					debug = () -> 
-						#debugger;
+					# setTimeout debug, 3000
 
-					setTimeout debug, 3000
 
 			}
+
+		makeDroppable: (liView) ->
+			elementsDroppedTo = @elementsDroppedTo
+			$(liView.domEl).droppable {
+				drop: (e, ui) ->
+					elementsDroppedTo(liView)
+				over: (e, ui ) ->
+					$(e.target).addClass('droppable');
+				out: (e, ui) ->
+					$(e.target).removeClass('droppable');
+			}
+
+		elementsDroppedTo: (liView) =>
+
+			if util.getType(@currentLevel.curObj) == "object"
+				obj = liView.getObj()
+				for key in @files
+					obj[key] = @currentLevel.curObj[key]
+					delete @currentLevel.curObj[key]
+
+			@currentLevel.render(true)
+
+

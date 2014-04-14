@@ -22,13 +22,23 @@
         this.removeKey = __bind(this.removeKey, this);
         this.enableEditKeyMode = __bind(this.enableEditKeyMode, this);
         obj = {};
-        if (this.title === "ROOT") {
-          obj = this.parentObj[this.key];
+        if (this.key === "ROOT") {
+          obj = manager.rootJson[this.key];
         } else {
           obj = this.parentObj[this.key];
         }
         this.type = util.getType(obj);
       }
+
+      ListElementView.prototype.getObj = function() {
+        var obj;
+        if (this.key === "ROOT") {
+          obj = manager.rootJson[this.key];
+        } else {
+          obj = this.parentObj[this.key];
+        }
+        return obj;
+      };
 
       ListElementView.prototype.render = function(rerender) {
         if (rerender !== true) {

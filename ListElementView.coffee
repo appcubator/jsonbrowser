@@ -11,13 +11,22 @@ define (require, exports, module) ->
 		constructor: (@currentPath, @key, @parentObj, @level) ->
 			obj = {}
 
-			if @title == "ROOT" 
-				obj = @parentObj[@key];
+			if @key == "ROOT" 
+				obj = manager.rootJson[@key];
 			else 
 				obj = @parentObj[@key];
 
 			@type = util.getType(obj);
 
+
+		getObj: () ->
+
+			if @key == "ROOT" 
+				obj = manager.rootJson[@key];
+			else 
+				obj = @parentObj[@key];
+
+			obj
 
 		render: (rerender) ->
 
@@ -38,8 +47,7 @@ define (require, exports, module) ->
 			@domEl.innerHTML = "<span class='icon #{@type}'></span><span>#{@key}</span><span class='remove'>×</span>";
 			@setupDataAttributes()
 
-			$(@domEl).find('.remove').on 'click', @removeKey			
-
+			$(@domEl).find('.remove').on 'click', @removeKey
 
 			return @domEl;
 

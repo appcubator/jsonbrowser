@@ -75,6 +75,9 @@ define [
 		@rerenderLevel = (level) ->
 			levels[level].render(true)
 
+		@getLevelViews = () ->
+			levels
+
 		# removes the views after the given level
 		@cleanDeeperLevels = (levelNo) ->
 			curLevel = levels[levelNo];

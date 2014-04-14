@@ -173,9 +173,17 @@ li.add-more .add-new:hover {
 	background-color: #aab3c2;
 }
 
+li.ui-draggable-dragging {
+	opacity: 0.4;
+}
+
 .add-more:hover {
 	font-size: 12px;
 	font-weight: bold;
 	color: #666;
+}
+
+.droppable {
+	background-color: #aab3d2;
 }
 
