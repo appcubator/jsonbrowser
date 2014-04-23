@@ -1,0 +1,21 @@
+{
+  "name": "JSON-Browser",
+  "version": "0.0.1",
+  "author": "Ilter Canberk <ilter@appcubator.com>",
+  "description": "Intuitive JSON editor.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appcubator/jsonbrowser"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "dependencies": {
+    "underscore": "1.x",
+    "browserify": "1.x",
+    "coffee-script": "1.6.x",
+    "coffeelint": "0.5.x",
+    "watchr": "2.4.x"
+  },
+  "license": "MIT"
+}
