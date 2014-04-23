@@ -1,9 +1,9 @@
-define (require, exports, module) ->
+util = require 'util'
+{LevelView} = require './LevelView'
 
-	util = require 'util'
-	LevelView = require('cs!LevelView')
+class ObjectLevelView extends LevelView
 
-	class ObjectLevelView extends LevelView
+	setKeys: () ->
+		@keys = _.keys(@curObj)
 
-		setKeys: () ->
-			@keys = _.keys(@curObj)
+exports.ObjectLevelView = ObjectLevelView

@@ -1,16 +1,18 @@
+# importing the libraries
 Global = {}
-Global.$ = require "jquery"
+$ = require "jquery"
+
+$ = jQuery = require('jquery');
+module.exports = require('jquery-ui-browserify');
+
+Global.$ = $
+
 
 if window
-    window.Framer = Global
-    window._ = require "underscore"
+	window._ = require "underscore"
+	# adding the libraries to window
+	_.extend window, Global
 
-    _.extend window, Global
-
-    Manager = reqiure "Manager"
-    window.manager = new Manager()
-    console.log manager
-    manager.setupEditor({
-        "yolo" : "hey",
-        "zolo" : [1,2,3]
-    })
+	# expose the library to window as JSONBrowser
+	{Manager} = require "./Manager"
+	window.JSONBrowser = Manager

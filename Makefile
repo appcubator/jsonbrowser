@@ -1,8 +1,8 @@
 all: build
 
 build:
-	# make lint
-	# make clean
+	make lint
+	make clean
 	mkdir -p build
 	./node_modules/browserify/bin/cmd.js src/main.coffee >> build/jsonbrowser.js
 buildw:

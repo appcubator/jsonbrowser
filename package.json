@@ -13,7 +13,9 @@
   "dependencies": {
     "underscore": "1.x",
     "jquery": "*",
+    "jquery-ui-browserify": "*",
     "browserify": "1.x",
+    "brace" : "*",
     "coffee-script": "1.6.x",
     "coffeelint": "0.5.x",
     "watchr": "2.4.x"

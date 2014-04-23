@@ -8,12 +8,19 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="./jquery-ui.css">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../src/css/jquery-ui.css">
+    <link rel="stylesheet" href="../src/css/style.css">
 
   </head>
   <body>
-    <script data-main="./main" src="./libs/require.js"></script>
+    <script src="../build/jsonbrowser.js"></script>
+    <script>
+        var jsonbrowser = new JSONBrowser();
+        jsonbrowser.setupEditor({
+            "yolo" : "hey",
+            "zolo" : [1,2,3]
+        });
+    </script>
   </body>
 </html>
 
