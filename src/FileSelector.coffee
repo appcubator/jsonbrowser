@@ -5,6 +5,7 @@ class FileSelector
 	constructor: () ->
 		@files = []
 		@currentLevel = null
+		@clipboardFiles = [];
 
 
 	getIndexOfKey: (targetKey) ->
@@ -123,6 +124,7 @@ class FileSelector
 				$(e.target).removeClass('droppable');
 		}
 
+
 	elementsDroppedTo: (liView) =>
 
 		if util.getType(@currentLevel.curObj) == "object"
@@ -132,5 +134,17 @@ class FileSelector
 				delete @currentLevel.curObj[key]
 
 		@currentLevel.render(true)
+
+
+	copy: () ->
+		@clipboardFiles = {}
+		for key in @files
+			@clipboardFiles[key] = @currentLevel.curObj[key]
+
+
+	paste: () ->
+		for key, value of @clipboardFiles
+			@superView.activeLevel.addKeyValue(key, value)
+
 
 exports.FileSelector = FileSelector

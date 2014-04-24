@@ -20,6 +20,13 @@ class LevelView
 	setKeys: () ->
 		@keys = null
 
+	addKeyValue: (key, val) ->
+		while (@curObj[key])
+			key = "Copy_" + key
+
+		@curObj[key] = val
+		@render(true)
+
 	render: (rerender) ->
 
 		@superView.highlightPrevKey(@level, @title);
@@ -154,7 +161,6 @@ class LevelView
 			currentKey = @keys[curInd + 1]
 
 		@superView.navigateToKey currentKey, @parentPath, @level
-
 
 
 	remove: () ->

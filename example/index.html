@@ -13,13 +13,11 @@
 
   </head>
   <body>
+    <script src="./test-json.js"></script>
     <script src="../build/jsonbrowser.js"></script>
     <script>
         var jsonbrowser = new JSONBrowser();
-        jsonbrowser.setupEditor({
-            "yolo" : "hey",
-            "zolo" : [1,2,3]
-        });
+        jsonbrowser.setupEditor(json);
     </script>
   </body>
 </html>

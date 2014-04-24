@@ -14,6 +14,7 @@ class Manager
 		@levels = {};
 		@activeLevel = null
 		@selector = new FileSelector()
+		@selector.superView = this
 		@isShiftPressed = false
 
 	# setup function that takes in the json that
@@ -34,14 +35,20 @@ class Manager
 			cntrled = e.metaKey || e.ctrlKey
 
 			switch e.keyCode
-				when 37
+				when 37 
 					console.log("hey")
+				# up arrow
 				when 38
 					@activeLevel.navigateUp()
 				when 39
 					console.log("hey")
+				# down arrow
 				when 40
 					@activeLevel.navigateDown()
+				when 67
+					@selector.copy()
+				when 86
+					@selector.paste()
 
 			return true
 
@@ -76,14 +83,15 @@ class Manager
 
 		switch util.getType(obj)
 			when "object"
-				@navigateToObject(obj, parentObj, key, parentPath, nextLevel);
+				lView = @navigateToObject(obj, parentObj, key, parentPath, nextLevel);
 			when "string"
-				@navigateToStringEditor(obj, parentObj, key, parentPath, nextLevel);
+				lView = @navigateToStringEditor(obj, parentObj, key, parentPath, nextLevel);
 			when "array"
-				@navigateToArray(obj, parentObj, key, parentPath, nextLevel);
+				lView = @navigateToArray(obj, parentObj, key, parentPath, nextLevel);
 			when "number"
-				@navigateToNumberEditor(obj, parentObj, key, parentObj, parentPath, nextLevel);
+				lView = @navigateToNumberEditor(obj, parentObj, key, parentObj, parentPath, nextLevel);
 
+		@activeLevel = lView
 
 	rerenderLevel: (level) ->
 		@levels[level].render(true)
